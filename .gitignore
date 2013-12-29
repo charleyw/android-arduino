@@ -2,3 +2,7 @@
 out
 gen
 *.iml
+*.ipr
+*.iws
+.gradle
+gradle
