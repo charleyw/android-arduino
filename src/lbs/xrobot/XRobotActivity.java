@@ -17,9 +17,10 @@
 package lbs.xrobot;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import java.io.IOException;
 
 import lbs.xrobot.handler.ArduinoCommandCallback;
 import lbs.xrobot.handler.ArduinoController;
+import lbs.xrobot.handler.RTCClient;
 import lbs.xrobot.handler.ServerConnectCallback;
 
 /**
@@ -55,9 +57,9 @@ public class XRobotActivity extends Activity {
     private int rightSpeedPin;
     private int rightFrontPin;
     private int rightBackPin;
-    private BroadcastReceiver mReceiver;
     private ArduinoController arduinoController;
     private ServerConnectCallback serverConnectCallback;
+    private PowerManager.WakeLock mWakeLock;
 
     public XRobotActivity() {
     }
@@ -69,6 +71,9 @@ public class XRobotActivity extends Activity {
 
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.xrobot_activity);
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+        this.mWakeLock.acquire();
         initialize();
         bind();
     }
@@ -82,10 +87,10 @@ public class XRobotActivity extends Activity {
         startBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     updateConfiguration();
                     connect();
-                }else{
+                } else {
                     disconnectAll();
                     Toast.makeText(getBaseContext(), "Disconnected all", Toast.LENGTH_LONG).show();
                 }
@@ -100,7 +105,7 @@ public class XRobotActivity extends Activity {
 
     private void connect() {
         try {
-            connectServer(connectArduino());
+            connectServer(connectArduino(), new RTCClient(this));
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Fail to connect arduino: " + e, Toast.LENGTH_SHORT).show();
         }
@@ -127,8 +132,8 @@ public class XRobotActivity extends Activity {
         }
     }
 
-    private void connectServer(ArduinoCommandCallback arduinoCommandCallback) {
-        serverConnectCallback = new ServerConnectCallback(this, arduinoCommandCallback);
+    private void connectServer(ArduinoCommandCallback arduinoCommandCallback , RTCClient rtcClient) {
+        serverConnectCallback = new ServerConnectCallback(this, arduinoCommandCallback, rtcClient);
         SocketIOClient.connect(serverAddress, serverConnectCallback,new Handler());
     }
 
@@ -163,4 +168,9 @@ public class XRobotActivity extends Activity {
         super.onResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        this.mWakeLock.release();
+        super.onDestroy();
+    }
 }

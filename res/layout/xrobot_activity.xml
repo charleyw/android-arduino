@@ -36,16 +36,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@color/sky_blue"
-            android:textColor="@color/white"
-            android:padding="5dp"
             android:text="Server address:"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:paddingLeft="15dp"
-                  android:paddingRight="15dp"
                   android:orientation="vertical">
         <RelativeLayout
                 android:layout_width="fill_parent"
@@ -68,9 +63,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@color/sky_blue"
-            android:textColor="@color/white"
-            android:padding="5dp"
             android:text="Arduino pins number:"/>
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
