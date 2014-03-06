@@ -1,106 +1,119 @@
 package lbs.xrobot.handler;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
 import org.shokai.firmata.ArduinoFirmata;
 
 import java.io.IOException;
 
+import lbs.xrobot.BluetoothSerialService;
+
 public class ArduinoController {
-    private final ArduinoFirmata arduino;
-    private int ea;
-    private int i1;
-    private int i2;
+    private BluetoothSerialService bluetoothSerialService;
 
-    private int eb;
-    private int i3;
-    private int i4;
-
-    private boolean isConnected;
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
-    private int speed = 100;
+    // Debugging
+    private static final String TAG = "BluetoothSerial";
+    private static final boolean D = true;
 
     public ArduinoController(Activity activity) {
-        this.arduino = new ArduinoFirmata(activity);
+        bluetoothSerialService = new BluetoothSerialService(mHandler);
     }
 
 
     public boolean isConnected() {
-        return isConnected;
+        return bluetoothSerialService.getState() == BluetoothSerialService.STATE_CONNECTED;
     }
 
-    public void connect(int ea, int i1, int i2, int eb, int i3, int i4) throws IOException, InterruptedException {
-        this.ea = ea;
-        this.i1 = i1;
-        this.i2 = i2;
-        this.eb = eb;
-        this.i3 = i3;
-        this.i4 = i4;
-        arduino.connect();
-        isConnected = true;
+    public void connect(BluetoothDevice bluetoothDevice) throws IOException, InterruptedException {
+        bluetoothSerialService.connect(bluetoothDevice, false);
+
     }
 
     public void disconnect(){
-        arduino.close();
-        isConnected = false;
-    }
-
-    public void stop() {
-        arduino.digitalWrite(i1, false);
-        arduino.digitalWrite(i2, false);
-        arduino.digitalWrite(i3, false);
-        arduino.digitalWrite(i4, false);
-        arduino.analogWrite(ea, 0);
-        arduino.analogWrite(eb, 0);
+        bluetoothSerialService.stop();
     }
 
     public void forward(){
-        leftSideForward();
-        rightSideForward();
+        sendToArduino("w");
     }
 
     public void turnLeft(){
-        leftSideForward();
-        rightSideBackward();
+        sendToArduino("a");
     }
 
     public void turnRight(){
-        leftSideBackward();
-        rightSideForward();
+        sendToArduino("d");
     }
 
 
     public void backward(){
-        leftSideBackward();
-        rightSideBackward();
+        sendToArduino("s");
     }
 
-    public void leftSideForward() {
-        arduino.analogWrite(ea, speed);
-        arduino.digitalWrite(i1, true);
-        arduino.digitalWrite(i2, false);
+    private void sendToArduino(String s) {
+        bluetoothSerialService.write(s.getBytes());
     }
 
-    public void leftSideBackward() {
-        arduino.analogWrite(ea, speed);
-        arduino.digitalWrite(i1, false);
-        arduino.digitalWrite(i2, true);
+    StringBuffer buffer = new StringBuffer();
+
+    private final Handler mHandler = new Handler() {
+
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case BluetoothSerialService.MESSAGE_READ:
+                    buffer.append((String)msg.obj);
+
+//                    if (dataAvailableCallback != null) {
+//                        sendDataToSubscriber();
+//                    }
+                    break;
+                case BluetoothSerialService.MESSAGE_STATE_CHANGE:
+
+                    if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                    switch (msg.arg1) {
+                        case BluetoothSerialService.STATE_CONNECTED:
+                            Log.i(TAG, "BluetoothSerialService.STATE_CONNECTED");
+                            notifyConnectionSuccess();
+                            break;
+                        case BluetoothSerialService.STATE_CONNECTING:
+                            Log.i(TAG, "BluetoothSerialService.STATE_CONNECTING");
+                            break;
+                        case BluetoothSerialService.STATE_LISTEN:
+                            Log.i(TAG, "BluetoothSerialService.STATE_LISTEN");
+                            break;
+                        case BluetoothSerialService.STATE_NONE:
+                            Log.i(TAG, "BluetoothSerialService.STATE_NONE");
+                            break;
+                    }
+                    break;
+                case BluetoothSerialService.MESSAGE_WRITE:
+                    //  byte[] writeBuf = (byte[]) msg.obj;
+                    //  String writeMessage = new String(writeBuf);
+                    //  Log.i(TAG, "Wrote: " + writeMessage);
+                    break;
+                case BluetoothSerialService.MESSAGE_DEVICE_NAME:
+//                    Log.i(TAG, msg.getData().getString(DEVICE_NAME));
+                    break;
+                case BluetoothSerialService.MESSAGE_TOAST:
+                    String message = msg.getData().getString(BluetoothSerialService.TOAST);
+                    notifyConnectionLost(message);
+                    break;
+            }
+        }
+
+
+    };
+
+    private void notifyConnectionLost(String message) {
+
     }
 
-    public void rightSideForward() {
-        arduino.analogWrite(eb, speed);
-        arduino.digitalWrite(i3, true);
-        arduino.digitalWrite(i4, false);
-    }
+    private void notifyConnectionSuccess() {
 
-    public void rightSideBackward() {
-        arduino.analogWrite(eb, speed);
-        arduino.digitalWrite(i3, false);
-        arduino.digitalWrite(i4, true);
     }
 
 }

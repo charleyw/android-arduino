@@ -17,18 +17,29 @@
 package lbs.xrobot;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.koushikdutta.async.http.socketio.SocketIOClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import lbs.xrobot.handler.ArduinoCommandCallback;
 import lbs.xrobot.handler.ArduinoController;
@@ -44,13 +55,9 @@ public class XRobotActivity extends Activity {
     public static String TAG = "X_ROBOT_ACTIVITY";
     private ToggleButton startBtn;
     private EditText serverAddressEditor;
-    private EditText leftSpeedPinEditor;
-    private EditText leftFrontPinEditor;
-    private EditText leftBackPinEditor;
-    private EditText rightSpeedPinEditor;
-    private EditText rightFrontPinEditor;
-    private EditText rightBackPinEditor;
+    private Spinner bluetoothDevicesList;
     private String serverAddress;
+    private BluetoothDevice bluetoothDevice;
     private int leftSpeedPin;
     private int leftFrontPin;
     private int leftBackPin;
@@ -112,18 +119,9 @@ public class XRobotActivity extends Activity {
     }
 
     private ArduinoCommandCallback connectArduino() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Arduino Connected: ").append("\n");
-        sb.append("ea:").append(leftSpeedPin).append(" ");
-        sb.append("i1:").append(leftFrontPin).append(" ");
-        sb.append("i2:").append(leftBackPin).append(" ");
-        sb.append("eb:").append(rightSpeedPin).append(" ");
-        sb.append("i3:").append(rightFrontPin).append(" ");
-        sb.append("i4:").append(rightBackPin).append(" ");
-
         try {
-            arduinoController.connect(leftSpeedPin, leftFrontPin, leftBackPin, rightSpeedPin, rightFrontPin, rightBackPin);
-            Toast.makeText(getBaseContext(), sb.toString(), Toast.LENGTH_SHORT).show();
+            arduinoController.connect(bluetoothDevice);
+            Toast.makeText(getBaseContext(), "arduino via bluetooth: " + bluetoothDevice.getAddress(), Toast.LENGTH_SHORT).show();
             return new ArduinoCommandCallback(this, arduinoController);
         } catch (IOException e) {
             throw new Exception("Connect arduino failed", e);
@@ -139,25 +137,38 @@ public class XRobotActivity extends Activity {
 
     private void updateConfiguration() {
         serverAddress = serverAddressEditor.getText().toString();
-
-        leftSpeedPin = Integer.parseInt(leftSpeedPinEditor.getText().toString());
-        leftFrontPin = Integer.parseInt(leftFrontPinEditor.getText().toString());
-        leftBackPin = Integer.parseInt(leftBackPinEditor.getText().toString());
-
-        rightSpeedPin = Integer.parseInt(rightSpeedPinEditor.getText().toString());
-        rightFrontPin = Integer.parseInt(rightFrontPinEditor.getText().toString());
-        rightBackPin = Integer.parseInt(rightBackPinEditor.getText().toString());
     }
 
     private void initializeControls() {
         startBtn = (ToggleButton) findViewById(R.id.start);
         serverAddressEditor = (EditText) findViewById(R.id.serverAddress);
-        leftSpeedPinEditor = (EditText) findViewById(R.id.ea);
-        leftFrontPinEditor = (EditText)findViewById(R.id.i1);
-        leftBackPinEditor = (EditText)findViewById(R.id.i2);
-        rightSpeedPinEditor = (EditText)findViewById(R.id.eb);
-        rightFrontPinEditor = (EditText)findViewById(R.id.i3);
-        rightBackPinEditor = (EditText)findViewById(R.id.i4);
+        bluetoothDevicesList = (Spinner) findViewById(R.id.bluetoothDevices);
+        createBluetoothList();
+    }
+
+    private void createBluetoothList() {
+        Set<BluetoothDevice> bondedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
+        final Map<String, BluetoothDevice> btMap = new HashMap<String, BluetoothDevice>();
+        for(BluetoothDevice bt : bondedDevices){
+            btMap.put(bt.getName(), bt);
+        }
+        List<String> arrayList = new ArrayList(btMap.keySet());
+        ArrayAdapter<String> btNames = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList);
+        btNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        bluetoothDevicesList.setAdapter(btNames);
+        bluetoothDevicesList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String btName = (String) adapterView.getItemAtPosition(i);
+                bluetoothDevice = btMap.get(btName);
+                Toast.makeText(getBaseContext(), "bluetooth mac: " + bluetoothDevice.getAddress(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     /**

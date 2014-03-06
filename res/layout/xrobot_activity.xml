@@ -38,115 +38,26 @@
             android:layout_centerVertical="true"
             android:text="Server address:"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical">
-        <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-            <EditText
-                    android:id="@+id/serverAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:text="http://10.29.2.72:9080"/>
-        </RelativeLayout>
-
-    </LinearLayout>
+    <EditText
+            android:id="@+id/serverAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="http://176.58.114.68:3000/"/>
 
     <TextView
-            android:id="@+id/arduinoTitle"
+            android:id="@+id/bluetoothName"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:text="Arduino pins number:"/>
+            android:text="Bluetooth:"/>
 
-    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/gridview"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:paddingLeft="15dp"
-              android:columnCount="4"
-              android:inputType="numberDecimal"
-              android:rowCount="3">
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="EA"/>
-
-        <EditText
-                android:id="@+id/ea"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:text="11"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="EB"/>
-
-        <EditText
-                android:id="@+id/eb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:text="3"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I1"/>
-
-        <EditText
-                android:id="@+id/i1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:text="12"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I3"/>
-
-        <EditText
-                android:id="@+id/i3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:text="2"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I2"/>
-
-        <EditText
-                android:id="@+id/i2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:text="13"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="I4"/>
-
-        <EditText
-                android:id="@+id/i4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:text="4"/>
-
-    </GridLayout>
+    <Spinner
+            android:id="@+id/bluetoothDevices"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
     <ToggleButton
             android:id="@+id/start"

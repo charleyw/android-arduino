@@ -19,7 +19,7 @@
 
 <resources>
     <!-- Simple strings. -->
-    <string name="skeleton_app">Skeleton App</string>
+    <string name="skeleton_app">DORA</string>
     <string name="back">Back</string>
     <string name="clear">Clear</string>
 
