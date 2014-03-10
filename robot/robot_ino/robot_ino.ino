@@ -17,8 +17,8 @@ int bottomServoPin = 6;
 char inputType;
 Servo topServo;
 Servo bottomServo;
-int topAngle = 0;
-int bottomAngle = 0;
+int topAngleDelta = 0;
+int bottomAngleDelta = 0;
 
 
 void setup() {
@@ -46,7 +46,7 @@ void loop() {
     processCommand();
     timeDone = -1;
   }
-  moveServo(topAngle, bottomAngle);
+  moveServo(topAngleDelta, bottomAngleDelta);
   delay(15);
 }
 
@@ -59,6 +59,8 @@ void timeIsr() {
 void processCommand(){
   int leftSpeed  = 0;
   int rightSpeed = 0;
+  topAngleDelta = 0;
+  bottomAngleDelta = 0;
 
   if(Serial.available()){
     leftSpeed = Serial.parseInt();
@@ -66,9 +68,9 @@ void processCommand(){
     rightSpeed = Serial.parseInt();
     char terminator = Serial.read();
     // servo
-    topAngle = Serial.parseInt();
+    topAngleDelta = Serial.parseInt();
     delimiter = Serial.read();
-    bottomAngle = Serial.parseInt();
+    bottomAngleDelta = Serial.parseInt();
     terminator = Serial.read();
   }
 
