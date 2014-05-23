@@ -36,7 +36,7 @@ public class ArduinoCommandCallback implements EventCallback {
             }else if("d".equals(command)){
                 arduinoController.turnRight();
             }else{
-//                arduinoController.stop();
+                arduinoController.sendToArduino(command);
             }
         } catch (JSONException e) {
             e.printStackTrace();

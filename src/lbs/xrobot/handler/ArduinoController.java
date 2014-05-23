@@ -16,7 +16,7 @@ public class ArduinoController {
     private BluetoothSerialService bluetoothSerialService;
 
     // Debugging
-    private static final String TAG = "BluetoothSerial";
+    private static final String TAG = "ArduinoController";
     private static final boolean D = true;
 
     public ArduinoController(Activity activity) {
@@ -38,24 +38,28 @@ public class ArduinoController {
     }
 
     public void forward(){
-        sendToArduino("w");
+        Log.i(TAG, "SEND TO ARDUINO: w ");
+        sendToArduino("1,1;");
     }
 
     public void turnLeft(){
-        sendToArduino("a");
+        Log.i(TAG, "SEND TO ARDUINO: a ");
+        sendToArduino("-1,1;");
     }
 
     public void turnRight(){
-        sendToArduino("d");
+        Log.i(TAG, "SEND TO ARDUINO: d ");
+        sendToArduino("1,-1;");
     }
 
 
     public void backward(){
-        sendToArduino("s");
+        Log.i(TAG, "SEND TO ARDUINO: s ");
+        sendToArduino("-1,-1;");
     }
 
-    private void sendToArduino(String s) {
-        bluetoothSerialService.write(s.getBytes());
+    public void sendToArduino(String s) {
+        bluetoothSerialService.write((s+";").getBytes());
     }
 
     StringBuffer buffer = new StringBuffer();

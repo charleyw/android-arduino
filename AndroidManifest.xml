@@ -47,13 +47,13 @@
              can launch and interact with.  The "name" attribute is the
              name of the class within your package that implements this
              activity. -->
-        <activity android:name=".XRobotActivity"
+        <activity android:name=".MainActivity"
                   android:screenOrientation="landscape">
 
             <!-- An IntentFilter tells the system when it should use your
                  activity.  This allows the user to get to your activity
                  without someone having to explicitly know to launch your
-                 class "com.examplel.android.xrobot.XRobotActivity". -->
+                 class "com.examplel.android.xrobot.MainActivity". -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

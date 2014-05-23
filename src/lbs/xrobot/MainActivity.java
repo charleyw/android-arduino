@@ -51,24 +51,18 @@ import lbs.xrobot.handler.ServerConnectCallback;
  * activity. Inside of its window, it places a single view: an EditText that
  * displays and edits some internal text.
  */
-public class XRobotActivity extends Activity {
+public class MainActivity extends Activity {
     public static String TAG = "X_ROBOT_ACTIVITY";
     private ToggleButton startBtn;
     private EditText serverAddressEditor;
     private Spinner bluetoothDevicesList;
     private String serverAddress;
     private BluetoothDevice bluetoothDevice;
-    private int leftSpeedPin;
-    private int leftFrontPin;
-    private int leftBackPin;
-    private int rightSpeedPin;
-    private int rightFrontPin;
-    private int rightBackPin;
     private ArduinoController arduinoController;
     private ServerConnectCallback serverConnectCallback;
     private PowerManager.WakeLock mWakeLock;
 
-    public XRobotActivity() {
+    public MainActivity() {
     }
 
     /** Called with the activity is first created. */

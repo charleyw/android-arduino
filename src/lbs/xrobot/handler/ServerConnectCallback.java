@@ -4,22 +4,16 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
 import com.koushikdutta.async.http.socketio.DisconnectCallback;
-import com.koushikdutta.async.http.socketio.ErrorCallback;
-import com.koushikdutta.async.http.socketio.JSONCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
-import com.koushikdutta.async.http.socketio.StringCallback;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import lbs.xrobot.XRobotActivity;
+import lbs.xrobot.MainActivity;
 
 public class ServerConnectCallback implements ConnectCallback, DisconnectCallback{
     private Activity activity;
@@ -44,7 +38,7 @@ public class ServerConnectCallback implements ConnectCallback, DisconnectCallbac
             Toast.makeText(activity.getBaseContext(), "Connect server failed: \n" + ex, Toast.LENGTH_SHORT).show();
             StringWriter stack = new StringWriter();
             ex.printStackTrace(new PrintWriter(stack));
-            Log.e(XRobotActivity.TAG, stack.toString());
+            Log.e(MainActivity.TAG, stack.toString());
             ex.printStackTrace();
             return;
         }

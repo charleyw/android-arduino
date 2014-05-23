@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="http://176.58.114.68:3000/"/>
+            android:text="http://10.29.2.62:3000"/>
 
     <TextView
             android:id="@+id/bluetoothName"
