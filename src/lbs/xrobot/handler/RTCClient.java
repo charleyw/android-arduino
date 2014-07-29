@@ -68,6 +68,7 @@ public class RTCClient implements EventCallback {
         pcConstraints = new MediaConstraints();
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
+        pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
     }
 
     // Cycle through likely device names for the camera and return the first
